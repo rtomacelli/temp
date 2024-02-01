@@ -1,0 +1,39 @@
+---
+- name: Excluir os dados de uma equipe na base de dados
+  hosts: localhost
+  connection: local
+  become: true
+  gather_facts: true
+  collections:
+    - ansible.posix
+    - community.general
+    - community.mongodb
+    - rfg.gitlab
+    - sgh.apb_config
+  tasks:
+
+    - name: Consulta a se a quantidade de registros retornada é 1
+      uri:
+        url: "https://api.suporte.hm.bb.com.br/v1/config/"
+        method: get
+        body_format: json
+        body: "{{ json_equipe|to_json }}"
+        status_code: [200, 201]
+      register: resposta_consulta_registro_db
+
+    - name: Excluir uma equipe da base de dados
+      uri:
+        url: "https://api.suporte.hm.bb.com.br/v1/config"
+        method: DELETE
+        status_code: [200, 201, 204]
+        return_content: no
+      register: resposta_api
+
+    - name: Verificar resposta da API
+      debug:
+        var: resposta_api
+
+    - import_tasks: tasks/manage_gitlab.yml
+      vars:
+        action_hook: delete
+        action_member: delete

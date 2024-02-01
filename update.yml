@@ -1,0 +1,47 @@
+---
+- name: Atualizar equipes na base de dados
+  hosts: localhost
+  connection: local
+  become: true
+  gather_facts: true
+  collections:
+    - ansible.posix
+    - community.general
+    - community.mongodb
+    - rfg.gitlab
+    - sgh.apb_config
+  tasks:
+    - name: Atualizar os dados de uma equipe na base de dados a partir da oferta
+      set_fact:
+        json_equipe:
+          sigla: "{{ sigla|lower }}"
+          papeis_ldap: "{{ papeis_ldap|lower | map(attribute='string_papel') | list }}"
+          label_time: "{{ label_time|lower }}"
+          project_id: "{{ project_id }}"
+          equipe_gsti: "{{ equipe_gsti | default('') }}"
+          ofertas_monitoradas: "{{ ofertas_monitoradas | default([]) | map(attribute='string_oferta_monitorada') | list }}"
+          repositorio_git: "{{ get_project_result }}"
+          doc_url: "{{ doc_url | default('')  }}"
+          gpt_allowed: false
+
+    - name: Consulta a se a quantidade de registros retornada é 1
+      uri:
+        url: "https://api.suporte.hm.bb.com.br/v1/config/"
+        method: get
+        body_format: json
+        body: "{{ json_equipe|to_json }}"
+        status_code: [200, 201]
+      register: resposta_consulta_registro_db
+
+    - name: Envia os dados de uma equipe para a API para atualizar na base de dados
+      uri:
+        url: "https://api.suporte.hm.bb.com.br/v1/config"
+        method: PUT
+        body_format: json
+        body: "{{ json_equipe|to_json }}"
+        status_code: [200, 201]
+      register: resposta_api
+
+    - name: Exibir resposta da API
+      debug:
+        var: resposta_api

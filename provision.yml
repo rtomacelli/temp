@@ -1,0 +1,59 @@
+---
+- name: Cadastrar equipes na base de dados
+  hosts: localhost
+  connection: local
+  become: true
+  gather_facts: true
+  collections:
+    - ansible.posix
+    - community.general
+    - community.mongodb
+    - rfg.gitlab
+    - sgh.apb_config
+  tasks:
+    - import_tasks: tasks/manage_gitlab.yml
+      vars:
+        create_webhook: false
+        add_marvin_user: false
+
+    - name: Inserir os dados de uma equipe na base de dados a partir da oferta
+      set_fact:
+        json_equipe:
+
+          sigla: "{{ sigla|lower }}"
+          papeis_ldap: "{{ papeis_ldap|lower | map(attribute='string_papel') | list }}"
+          label_time: "{{ label_time|lower }}"
+          project_id: "{{ project_id }}"
+          equipe_gsti: "{{ equipe_gsti | default('') }}"
+          ofertas_monitoradas: "{{ ofertas_monitoradas | default([]) | map(attribute='string_oferta_monitorada') | list }}"
+          repositorio_git: "{{ get_project_result }}"
+          doc_url: "{{ doc_url | default('')  }}"
+          gpt_allowed: false
+
+    - name: Envia os dados para a API
+      uri:
+        url: "https://api.suporte.hm.bb.com.br/v1/config"
+        method: POST
+        body_format: json
+        body: "{{ json_equipe|to_json }}"
+        status_code: [200, 201]
+      register: resposta_api
+
+    - name: Exibir resposta da API
+      debug:
+        var: resposta_api
+
+    - import_tasks: tasks/manage_gitlab.yml
+      vars:
+        create_webhook: true
+
+  post_tasks:
+    - name: Return offer outputs
+      include_role:
+        name: ansible_report
+      vars:
+        action: bind
+        params:
+          marvin_wiki_doc: "https://fontes.intranet.bb.com.br/sgh/publico/atendimento/-/wikis/home#marvin-bot"
+          painel_gestao_url: "https://bam.bb.com.br/spotfire/wp/analysis?file=/%5BP%C3%BAblica%5D/VITEC/UOS/GESIT/E33/Modulo_Suporte/Painel_Gestao"
+          fila_atendimento_url: "https://bam.bb.com.br/spotfire/wp/analysis?file=/%5BP%C3%BAblica%5D/VITEC/UOS/GESIT/E33/Modulo_Suporte/Fila_Atendimento"
