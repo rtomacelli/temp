@@ -24,7 +24,7 @@
           doc_url: "{{ doc_url | default('')  }}"
           gpt_allowed: false
 
-    - name: Consulta a se a quantidade de registros retornada é 1
+    - name: Consulta se a quantidade de registros retornada é 1
       uri:
         url: "https://api.suporte.hm.bb.com.br/v1/config/"
         method: get
@@ -33,6 +33,11 @@
         status_code: [200, 201]
       register: resposta_consulta_registro_db
 
+    - name: Verificar se a quantidade de registros é 1
+      fail:
+        msg: "A quantidade de registros retornada não é igual a 1"
+      when: resposta_consulta_registro_db.status != 1
+
     - name: Envia os dados de uma equipe para a API para atualizar na base de dados
       uri:
         url: "https://api.suporte.hm.bb.com.br/v1/config"
@@ -40,6 +45,17 @@
         body_format: json
         body: "{{ json_equipe|to_json }}"
         status_code: [200, 201]
+      when: resposta_consulta_registro_db.status == 1
+      register: resposta_api
+
+    - name: Retornar erro HTTP 406 se a quantidade de registros não for 1
+      uri:
+        url: "https://api.suporte.hm.bb.com.br/v1/config"
+        method: PUT
+        body_format: json
+        body: "{{ json_equipe|to_json }}"
+        status_code: 406
+      when: resposta_consulta_registro_db.status != 1
       register: resposta_api
 
     - name: Exibir resposta da API
