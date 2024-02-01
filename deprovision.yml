@@ -21,22 +21,21 @@
         status_code: [200, 201]
       register: resposta_consulta_registro_db
 
-    - name: Verificar se a resposta da consulta é igual a 1
-      block:
-        - name: Excluir uma equipe da base de dados
-          uri:
-            url: "https://api.suporte.hm.bb.com.br/v1/config"
-            method: DELETE
-            status_code: [200, 201, 204]
-            return_content: no
-          register: resposta_api
-        - import_tasks: tasks/manage_gitlab.yml
-          vars:
-            action_hook: delete
-            action_member: delete
-      when: resposta_consulta_registro_db.status == 200 and resposta_consulta_registro_db.json | int == 1
+    - name: Excluir uma equipe da base de dados
+      uri:
+        url: "https://api.suporte.hm.bb.com.br/v1/config"
+        method: DELETE
+        body_format: json
+        body: "{{ json_equipe|to_json }}"
+        status_code: [200, 201, 204]
+        return_content: no
+      register: resposta_api
 
-    - name: Retornar erro HTTP 406 se a quantidade de registros não for 1
-      fail:
-        msg: "Erro: Não é possível excluir a equipe, quantidade de registros diferente de 1."
-      when: resposta_consulta_registro_db.status == 200 and resposta_consulta_registro_db.json | int != 1
+    - name: Verificar resposta da API
+      debug:
+        var: resposta_api
+
+    - import_tasks: tasks/manage_gitlab.yml
+      vars:
+        action_hook: delete
+        action_member: delete
