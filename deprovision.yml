@@ -12,7 +12,7 @@
     - sgh.apb_config
   tasks:
 
-    - name: Consulta a se a quantidade de registros retornada é 1
+    - name: Consulta se a quantidade de registros retornada é 1
       uri:
         url: "https://api.suporte.hm.bb.com.br/v1/config/"
         method: get
@@ -20,6 +20,11 @@
         body: "{{ json_equipe|to_json }}"
         status_code: [200, 201]
       register: resposta_consulta_registro_db
+
+    - name: Verificar se a quantidade de registros é 1
+      fail:
+        msg: "A quantidade de registros retornada não é igual a 1"
+      when: resposta_consulta_registro_db.status != 1
 
     - name: Excluir uma equipe da base de dados
       uri:
@@ -29,6 +34,7 @@
         body: "{{ json_equipe|to_json }}"
         status_code: [200, 201, 204]
         return_content: no
+      when: resposta_consulta_registro_db.status == 1
       register: resposta_api
 
     - name: Verificar resposta da API
