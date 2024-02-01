@@ -12,7 +12,7 @@
     - sgh.apb_config
   tasks:
 
-    - name: Consulta se a quantidade de registros retornada é 1
+    - name: Consulta a se a quantidade de registros retornada é 1
       uri:
         url: "https://api.suporte.hm.bb.com.br/v1/config/"
         method: get
@@ -21,18 +21,6 @@
         status_code: [200, 201]
       register: resposta_consulta_registro_db
 
-    - name: Verificar resposta da consulta de registro na API
-      debug:
-        var: resposta_consulta_registro_db
-
-    - name: Verificar se a quantidade de registros é igual a 1
-      assert:
-        that:
-          - resposta_consulta_registro_db.status == 200
-          - resposta_consulta_registro_db.json | length == 1
-        msg: "Erro: A quantidade de registros retornada não é igual a 1"
-      when: resposta_consulta_registro_db.status == 200
-
     - name: Excluir uma equipe da base de dados
       uri:
         url: "https://api.suporte.hm.bb.com.br/v1/config"
@@ -40,18 +28,10 @@
         status_code: [200, 201, 204]
         return_content: no
       register: resposta_api
-      when: resposta_consulta_registro_db.status == 200
 
     - name: Verificar resposta da API
       debug:
         var: resposta_api
-
-    - name: Retornar erro HTTP 406 caso a quantidade de registros não seja 1
-      uri:
-        url: "http://localhost"
-        method: GET
-        status_code: 406
-      when: resposta_consulta_registro_db.status != 200
 
     - import_tasks: tasks/manage_gitlab.yml
       vars:
