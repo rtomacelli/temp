@@ -24,7 +24,7 @@
           doc_url: "{{ doc_url | default('')  }}"
           gpt_allowed: false
 
-    - name: Consulta a se a quantidade de registros retornada é 1
+    - name: Consulta se a quantidade de registros retornada é 1
       uri:
         url: "https://api.suporte.hm.bb.com.br/v1/config/"
         method: get
@@ -41,6 +41,12 @@
         body: "{{ json_equipe|to_json }}"
         status_code: [200, 201]
       register: resposta_api
+      when: resposta_consulta_registro_db.status == 1
+
+    - name: Retornar erro HTTP 406 caso a consulta não retorne 1 registro
+      debug:
+        msg: "Erro HTTP 406 - A consulta não retornou 1 registro."
+      when: resposta_consulta_registro_db.status != 1
 
     - name: Exibir resposta da API
       debug:
