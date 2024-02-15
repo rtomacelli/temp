@@ -106,17 +106,22 @@ router.get('/', async (req, res) => {
 
 // Endpoint DELETE para /config
 router.delete('/:_id', async (req, res) => {
-  const objectId = ObjectId(req.params._id);
-  console.log(`${new Date(Date.now()).toISOString()} - DELETE config - ENTRADA`)
-  const deleteResult = await suportedb.collection('config').deleteOne({ _id: objectId });
-  if (deleteResult.deletedCount === 0) {
-    console.log(`${new Date(Date.now()).toISOString()} - DELETE config - Erro: Config com ID ${req.params._id} não existe.`);
-    res.status(404).send(`Config com ID ${req.params._id} não existe.`);
-  }
-  else {
-    console.log(`${new Date(Date.now()).toISOString()} - DELETE config - SAIDA`)
-    res.status(200).send(`Config com ID ${req.params._id} deletado com sucesso.`);
+  try {
+    const objectId = ObjectId(req.params._id);
+    console.log(`${new Date(Date.now()).toISOString()} - DELETE config - ENTRADA`);
+    const deleteResult = await suportedb.collection('config').deleteOne({ _id: objectId });
+    if (deleteResult.deletedCount === 0) {
+      console.log(`${new Date(Date.now()).toISOString()} - DELETE config - Erro: Config com ID ${req.params._id} não existe.`);
+      res.status(404).send(`Config com ID ${req.params._id} não existe.`);
+    } else {
+      console.log(`${new Date(Date.now()).toISOString()} - DELETE config - SAIDA`);
+      res.status(200).send(`Config com ID ${req.params._id} deletado com sucesso.`);
+    }
+  } catch (error) {
+    console.error(`${new Date(Date.now()).toISOString()} - DELETE config - Erro:`, error);
+    res.status(500).send('Ocorreu um erro ao processar a solicitação.');
   }
 });
+
 
 module.exports = router;
