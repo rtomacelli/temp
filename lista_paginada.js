@@ -1,37 +1,55 @@
-import React from "react";
+import React, { useState } from 'react';
 
-import Layout from "@components/Layout";
+const PaginatedList = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5; // Número de itens por página
+  const items = Array.from({ length: 10 }, (_, i) => i + 1); // Lista de 10 itens
 
-import {
-  BbCard,
-  BbCardHeader,
-  BbCardBody,
-  BbCardFooter,
-  BbButton,
-} from "dls-bb-web-components-react-wrapper";
+  // Índices dos itens na página atual
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = items.slice(indexOfFirstItem, indexOfLastItem);
 
-const Home: React.FC = (): JSX.Element => {
+  // Função para alterar a página
+  const handleClick = (event) => {
+    setCurrentPage(Number(event.target.id));
+  };
+
+  // Números das páginas
+  const pageNumbers = [];
+  for (let i = 1; i <= Math.ceil(items.length / itemsPerPage); i++) {
+    pageNumbers.push(i);
+  }
+
+  // Renderização dos itens e números das páginas
+  const renderItems = currentItems.map((item, index) => {
+    return <li key={index}>{item}</li>;
+  });
+
+  const renderPageNumbers = pageNumbers.map((number) => {
+    return (
+      <li
+        key={number}
+        id={number}
+        onClick={handleClick}
+        className={currentPage === number ? 'active' : ''}
+      >
+        {number}
+      </li>
+    );
+  });
+
   return (
-    <Layout>
-      <BbCard>
-        <BbCardHeader>Marvin suporte React Blank</BbCardHeader>
-        <BbCardBody>
-          Esse é um projeto blank que ajuda você a dar o ponta pé inicial em uma aplicação dentro do
-          APW, para mais informações acesse a documentação oficial do APW clicando{" "}
-          <a target="_blank" rel="noreferrer" href="https://apw.apps.bb.com.br/">
-            aqui
-          </a>
-          <div className="wrapper">
- 
-          </div>
-        </BbCardBody>
-        <BbCardFooter>
-          <BbButton>Confirmar</BbButton>
-          <BbButton kind="secondary">Cancelar</BbButton>
-        </BbCardFooter>
-      </BbCard>
-    </Layout>
+    <div>
+      <h2>Lista Paginada de 10 Itens</h2>
+      <ul>
+        {renderItems}
+      </ul>
+      <ul id="page-numbers">
+        {renderPageNumbers}
+      </ul>
+    </div>
   );
 };
 
-export default Home;
+export default PaginatedList;
