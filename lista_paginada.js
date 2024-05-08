@@ -38,7 +38,7 @@ class ListaInteracoes extends React.Component {
     const currentItems = exampleData.slice(indexOfFirstItem, indexOfLastItem);
 
     const renderItems = currentItems.map((item, index) => {
-      return <div key={index}>{item.name}</div>;
+      return React.createElement('div', { key: index }, item.name);
     });
 
     const pageNumbers = [];
@@ -47,28 +47,23 @@ class ListaInteracoes extends React.Component {
     }
 
     const renderPageNumbers = pageNumbers.map(number => {
-      return (
-        <span
-          key={number}
-          id={number}
-          onClick={this.handleClick}
-          style={{ margin: '0 5px', cursor: 'pointer' }}
-        >
-          {number}
-        </span>
-      );
+      return React.createElement('span', {
+        key: number,
+        id: number,
+        onClick: this.handleClick,
+        style: { margin: '0 5px', cursor: 'pointer' }
+      }, number);
     });
 
-    return (
-      <div>
-        <div>{renderItems}</div>
-        <div style={{ marginTop: '10px' }}>{renderPageNumbers}</div>
-      </div>
+    return React.createElement('div', null,
+      React.createElement('div', null, renderItems),
+      React.createElement('div', { style: { marginTop: '10px' } }, renderPageNumbers)
     );
   }
 }
 
 export default ListaInteracoes;
+
 
 
 
