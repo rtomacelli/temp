@@ -1,0 +1,57 @@
+/** 
+* Paste one or more documents here
+*/
+{
+  "entrada": "issue",
+  "identificadores": [
+    "falta de recursos no cluster openshift",
+    "falta de memória"
+  ],
+  "adapters": [
+    {
+      "id": "ADPT20240000001",
+      "params": {
+        "label_name": "em_atendimento"
+      }
+    },
+    {
+      "id": "ADPT20240000001",
+      "params": {
+        "label_name": "time:pre_atendimento"
+      }
+    },
+    {
+      "id": "ADPT20240000001",
+      "params": {
+        "label_name": "sintoma:falta_memoria"
+      }
+    },
+    {
+      "id": "ADPT20240000002",
+      "params": {
+        "sigla": "{sigla}"
+      }
+    },
+    {
+      "id": "ADPT20240000001",
+      "params": {
+        "label_name": "sigla:{sigla}"
+      }
+    }
+  ],
+  "saida": "issue",
+  "project_id": "86127",
+  "label_time": "sgh-sre",
+  "sigla": "sgh",
+  "id": "INTIA20240000002",
+  "instrucoes_analise": "Responder ao cliente uma sumarização utilizando titulos/subtitulos markdown (ex: ###) com um resumo do seu pedido para confirmar os dados fornecidos. ",
+  "pre_requisitos": [
+    "sigla",
+    "cluster",
+    "ambiente",
+    "namespace"
+  ],
+  "instrucoes_prereq": "Procurar pelos pré-requisitos. A Sigla pode ser obtida do path do projeto, por exemplo em https://fontes.intranet.bb.com.br/sgh/sgh-marvin-bot-oferta/sgh-marvin-bot-oferta a sigla é SGH, ou no namespace ou nome da aplicação como por exemplo sgh-marvin-bot-oferta. ",
+  "status": "Aberto",
+  "repositorio_git": "https://fontes.intranet.bb.com.br"
+}
