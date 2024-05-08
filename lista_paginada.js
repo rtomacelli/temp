@@ -1,3 +1,6 @@
+Claro! Vou reescrever o componente `PaginatedList` sem usar a sintaxe JSX, usando em vez disso métodos do React como `createElement`. Aqui está o código:
+
+```jsx
 import React, { useState } from 'react';
 
 const PaginatedList = () => {
@@ -23,36 +26,29 @@ const PaginatedList = () => {
 
   // Renderização dos itens e números das páginas
   const renderItems = currentItems.map((item, index) => {
-    return <li key={index}>{item}</li>;
+    return React.createElement('li', { key: index }, item);
   });
 
   const renderPageNumbers = pageNumbers.map((number) => {
-    return (
-      <li
-        key={number}
-        id={number}
-        onClick={handleClick}
-        className={currentPage === number ? 'active' : ''}
-      >
-        {number}
-      </li>
-    );
+    return React.createElement('li', {
+      key: number,
+      id: number,
+      onClick: handleClick,
+      className: currentPage === number ? 'active' : ''
+    }, number);
   });
 
-  return (
-    <div>
-      <h2>Lista Paginada de 10 Itens</h2>
-      <ul>
-        {renderItems}
-      </ul>
-      <ul id="page-numbers">
-        {renderPageNumbers}
-      </ul>
-    </div>
+  return React.createElement('div', null,
+    React.createElement('h2', null, 'Lista Paginada de 10 Itens'),
+    React.createElement('ul', null, renderItems),
+    React.createElement('ul', { id: 'page-numbers' }, renderPageNumbers)
   );
 };
 
 export default PaginatedList;
+```
+
+Neste código, substituímos todas as ocorrências de JSX por chamadas de função `React.createElement`. O funcionamento do componente é o mesmo, mas agora não depende mais da sintaxe JSX.
 
 
 import React from 'react';
