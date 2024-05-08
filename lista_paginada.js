@@ -1,64 +1,37 @@
-import React, { Component } from 'react';
+import React from "react";
 
-class PaginatedList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      currentPage: 1,
-      itemsPerPage: 5, // Número de itens por página
-    };
-  }
+import Layout from "@components/Layout";
 
-  handleClick = (event) => {
-    this.setState({
-      currentPage: Number(event.target.id)
-    });
-  }
+import {
+  BbCard,
+  BbCardHeader,
+  BbCardBody,
+  BbCardFooter,
+  BbButton,
+} from "dls-bb-web-components-react-wrapper";
 
-  render() {
-    const { items, currentPage, itemsPerPage } = this.state;
+const Home: React.FC = (): JSX.Element => {
+  return (
+    <Layout>
+      <BbCard>
+        <BbCardHeader>Marvin suporte React Blank</BbCardHeader>
+        <BbCardBody>
+          Esse é um projeto blank que ajuda você a dar o ponta pé inicial em uma aplicação dentro do
+          APW, para mais informações acesse a documentação oficial do APW clicando{" "}
+          <a target="_blank" rel="noreferrer" href="https://apw.apps.bb.com.br/">
+            aqui
+          </a>
+          <div className="wrapper">
+ 
+          </div>
+        </BbCardBody>
+        <BbCardFooter>
+          <BbButton>Confirmar</BbButton>
+          <BbButton kind="secondary">Cancelar</BbButton>
+        </BbCardFooter>
+      </BbCard>
+    </Layout>
+  );
+};
 
-    // Lógica para exibir os itens correspondentes à página atual
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = items.slice(indexOfFirstItem, indexOfLastItem);
-
-    // Renderizar os itens da página atual
-    const renderItems = currentItems.map((item, index) => {
-      return <li key={index}>{item}</li>;
-    });
-
-    // Número de páginas
-    const pageNumbers = [];
-    for (let i = 1; i <= Math.ceil(items.length / itemsPerPage); i++) {
-      pageNumbers.push(i);
-    }
-
-    // Renderizar números de página
-    const renderPageNumbers = pageNumbers.map(number => {
-      return (
-        <li
-          key={number}
-          id={number}
-          onClick={this.handleClick}
-          className={currentPage === number ? 'active' : ''}
-        >
-          {number}
-        </li>
-      );
-    });
-
-    return (
-      <div>
-        <ul>
-          {renderItems}
-        </ul>
-        <ul id="page-numbers">
-          {renderPageNumbers}
-        </ul>
-      </div>
-    );
-  }
-}
-
-export default PaginatedList;
+export default Home;
