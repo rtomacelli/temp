@@ -53,3 +53,18 @@ const PaginatedList = () => {
 };
 
 export default PaginatedList;
+
+
+import React from 'react';
+import PaginatedList from './PaginatedList'; // Importando o componente
+
+const App = () => {
+  return (
+    <div>
+      <h1>Minha Página</h1>
+      <PaginatedList /> {/* Usando o componente */}
+    </div>
+  );
+};
+
+export default App;
