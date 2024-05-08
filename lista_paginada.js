@@ -68,3 +68,18 @@ const App = () => {
 };
 
 export default App;
+
+
+ERROR in ./src/components/interacao/PaginatedList.js 26:11
+Module parse failed: Unexpected token (26:11)
+You may need an appropriate loader to handle this file type, currently no loaders are configured to process this file. See https://webpack.js.org/concepts#loaders
+|   // Renderização dos itens e números das páginas
+|   const renderItems = currentItems.map((item, index) => {
+>     return <li key={index}>{item}</li>;
+|   });
+| 
+ @ ./src/pages/Home/home.tsx 3:0-64 12:38-51
+ @ ./src/pages/Home/index.ts 1:0-33 1:0-33
+ @ ./src/index.ts 1:0-39 1:0-39
+
+webpack 5.91.0 compiled with 1 error in 31163 ms
