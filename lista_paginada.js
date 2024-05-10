@@ -113,3 +113,32 @@ const Home: React.FC = (): JSX.Element => {
 };
 
 export default Home;
+
+
+
+import React, { useEffect, useState } from 'react';
+
+function MyComponent() {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    fetch('data.json')
+      .then(response => response.json())
+      .then(jsonData => setData(jsonData))
+      .catch(error => console.error('Error fetching JSON:', error));
+  }, []);
+
+  return (
+    React.createElement('div', null,
+      React.createElement('h1', null, 'Data from JSON'),
+      React.createElement('ul', null,
+        data.map((item, index) => (
+          React.createElement('li', { key: index }, item.name)
+        ))
+      )
+    )
+  );
+}
+
+export default MyComponent;
+
