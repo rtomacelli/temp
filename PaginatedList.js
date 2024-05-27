@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 
 const Pagination = ({ totalItems, itemsPerPage, onPageChange }) => {
@@ -11,19 +10,21 @@ const Pagination = ({ totalItems, itemsPerPage, onPageChange }) => {
     onPageChange(page);
   };
 
-  return (
-    <div>
-      {Array.from({ length: totalPages }, (_, index) => (
-        <button
-          key={index}
-          onClick={() => handleClick(index + 1)}
-          className={currentPage === index + 1 ? 'active' : ''}
-        >
-          {index + 1}
-        </button>
-      ))}
-    </div>
+  return React.createElement(
+    'div',
+    null,
+    Array.from({ length: totalPages }, (_, index) =>
+      React.createElement(
+        'button',
+        {
+          key: index,
+          onClick: () => handleClick(index + 1),
+          className: currentPage === index + 1 ? 'active' : ''
+        },
+        index + 1
+      )
+    )
   );
 };
 
-export default PaginatedList;
+export default Pagination;
