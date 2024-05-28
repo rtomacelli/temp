@@ -13,10 +13,10 @@ class ListaInteracoes extends React.Component {
   }
 
   componentDidMount() {
-    // Aqui você pode usar fetch ou qualquer método para obter os dados de um JSON remoto
-    // Para fins de exemplo, vamos usar require para obter os dados do arquivo JSON local
-    const data = require('./interacao.json');
-    this.setState({ data });
+    fetch('https://sua-api.com/endpoint') // Substitua pela URL da sua API
+      .then(response => response.json())
+      .then(data => this.setState({ data }))
+      .catch(error => console.error('Erro ao buscar dados da API:', error));
   }
 
   handleClick(event) {
